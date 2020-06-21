@@ -1,2 +1,2 @@
--f docker-compose.yml
+-f docker-compose_elk.yml
 latest

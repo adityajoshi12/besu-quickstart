@@ -2,7 +2,7 @@
 ARG BESU_VERSION=latest
 
 FROM hyperledger/besu:$BESU_VERSION
-
+USER root
 # Copy new entrypoint scripts
 COPY *_start.sh /opt/besu/
 

@@ -3,23 +3,21 @@ version: '3.4'
 services:
 
   bootnode:
-    build:
-      context: besu/.
-      args:
-        BESU_VERSION: ${BESU_VERSION}
-    image: sample-network/besu:${BESU_VERSION}
+    
+    image: hyperledger/besu:${BESU_VERSION}
     environment:
       - BESU_PUBLIC_KEY_DIRECTORY=${BESU_PUBLIC_KEY_DIRECTORY}
-    entrypoint: /opt/besu/bootnode_start.sh --network=dev --config-file=/config/config.toml --min-gas-price=0
+    entrypoint: /opt/besu/node_start.sh && /opt/besu/bootnode_start.sh --network=dev --config-file=/config/config.toml --min-gas-price=0
     volumes:
       - public-keys:${BESU_PUBLIC_KEY_DIRECTORY}
       - ./config/besu/config.toml:/config/config.toml
+      - ./besu/:/opt/besu/
     ports:
       - 30303:30303/tcp
       - 30303:30303/udp
 
   minernode:
-    image: sample-network/besu:${BESU_VERSION}
+    image: hyperledger/besu:${BESU_VERSION}
     environment:
       - BESU_PUBLIC_KEY_DIRECTORY=${BESU_PUBLIC_KEY_DIRECTORY}
     command: [
@@ -34,7 +32,7 @@ services:
       - bootnode
 
   node:
-    image: sample-network/besu:${BESU_VERSION}
+    image: hyperledger/besu:${BESU_VERSION}
     environment:
       - BESU_PUBLIC_KEY_DIRECTORY=${BESU_PUBLIC_KEY_DIRECTORY}
     command: [
@@ -47,7 +45,7 @@ services:
       - bootnode
 
   rpcnode:
-    image: sample-network/besu:${BESU_VERSION}
+    image: hyperledger/besu:${BESU_VERSION}
     environment:
       - BESU_PUBLIC_KEY_DIRECTORY=${BESU_PUBLIC_KEY_DIRECTORY}
     command: [
@@ -63,7 +61,7 @@ services:
 
   explorer:
     build: block-explorer-light/.
-    image: "sample-network/block-explorer-light:${BESU_VERSION}"
+    image: "hyperledger/block-explorer-light:${BESU_VERSION}"
     depends_on:
       - rpcnode
     ports:
@@ -91,6 +89,7 @@ services:
 
 volumes:
   public-keys:
+  besu:
 
   prometheus:
 
